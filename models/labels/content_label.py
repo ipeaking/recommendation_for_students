@@ -13,7 +13,7 @@ class ContentLabel(object):
         self.seg = Segment(stopword_files=[], userdict_files=[])
         self.engine = Mysql()
         self.session = self.engine._DBSession()
-        self.mongo = MongoDB(db='loginfo')
+        self.mongo = MongoDB(db='recommendation')
         self.db_loginfo = self.mongo.db_loginfo
         self.collection = self.db_loginfo['content_labels']
 
@@ -36,6 +36,10 @@ class ContentLabel(object):
                     content_collection['news_date'] = times
                     content_collection['hot_heat'] = 10000
                     content_collection['type'] = x.type
+                    content_collection['title'] = x.title
+                    content_collection['likes'] = 0
+                    content_collection['read'] = 0
+                    content_collection['collections'] = 0
                     content_collection['create_time'] = create_time
                     self.collection.insert_one(content_collection)
 

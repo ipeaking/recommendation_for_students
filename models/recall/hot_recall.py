@@ -19,11 +19,7 @@ init = 10000
 deltaT = 60
 plt.figure(figsize=(20, 8))
 
-decay_function(0.001, init, deltaT)
 decay_function(0.005, init, deltaT)
-decay_function(0.01, init, deltaT)
-decay_function(0.1, init, deltaT)
-decay_function(0.5, init, deltaT)
 
 plt.xticks([t for t in range(deltaT)])
 plt.grid()

@@ -31,6 +31,7 @@ from dao import redis_db
 from dao.mongo_db import MongoDB
 
 
+
 class write_to_redis(object):
     def __init__(self):
         self._redis = redis_db.Redis()
@@ -52,14 +53,20 @@ class write_to_redis(object):
             data = self.collection.find(cx)
             for info in data:
                 result = dict()
-                result['describe'] = info['describe']
-                result['type'] = info['type']
-                result['news_date'] = info['news_date']
+                result['describe'] = str(info['describe'])
+                result['type'] = str(info['type'])
+                result['title'] = str(info['title'])
+                result['news_date'] = str(info['news_date'])
+                result['content_id'] = str(info['_id'])
+                result['likes'] = info['likes']
+                result['read'] = info['read']
+                result['hot_heat'] = info['hot_heat']
+                result['collections'] = info['collections']
                 # self._redis.redis.delete(str(info['_id']))
                 self._redis.redis.set("news_detail:"+str(info['_id']), str(result))
                 if count % 100 == 0:
                     print(count)
-                count += 0
+                count += 1
 
 
 if __name__ == '__main__':

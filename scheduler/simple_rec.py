@@ -33,7 +33,7 @@ from dao.mongo_db import MongoDB
 class SimpleRecList(object):
     def __init__(self):
         self._redis = redis_db.Redis()
-        self.mongo = MongoDB(db='loginfo')
+        self.mongo = MongoDB(db='recommendation')
         self.db_loginfo = self.mongo.db_loginfo
         self.collection = self.db_loginfo['content_labels']
 

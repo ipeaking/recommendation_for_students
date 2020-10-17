@@ -4,8 +4,8 @@ import datetime
 class MongoDB(object):
     def __init__(self, db):
         mongo_client = self._connect('47.104.154.74', 27017, '', '', db)
-        self.db_loginfo = mongo_client['loginfo']
-        self.collection_test = self.db_loginfo['test_collections']
+        self.db_client = mongo_client[db]
+        self.collection_test = self.db_client['test_collections']
         return
 
     def _connect(self, host, port, user, pwd, db):
@@ -32,5 +32,5 @@ class MongoDB(object):
 
 
 if __name__ == '__main__':
-    mongo = MongoDB(db='test')
+    mongo = MongoDB(db='loginfo')
     mongo.test_insert()
