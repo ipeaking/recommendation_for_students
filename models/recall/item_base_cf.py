@@ -32,10 +32,11 @@ import math
 
 class ItemBaseCF(object):
     def __init__(self, train_file):
-        self.train = dict()
-        self.user_item_history = dict()
-        self.item_to_item = dict()
+        self.train = dict()                 # {user: {item: score, ...} }
+        self.user_item_history = dict()     # {user: [item, ...]}
+        self.item_to_item = dict()          # 文章-文章共现矩阵
         self.read_data(train_file)
+        self.cf_item_train()
 
     def read_data(self, train_file):
         """
@@ -46,8 +47,8 @@ class ItemBaseCF(object):
         with open(train_file, mode='r', encoding='utf-8') as rf:
             for line in tqdm(rf.readlines()):
                 user, score, item = line.strip().split(",")
-                self.train.setdefault(user, {})
-                self.user_item_history.setdefault(user, {})
+                self.train.setdefault(user, {})  # setdefault 如果不存在会在原字典里添加一个 key:default_value 并返回 default_value
+                self.user_item_history.setdefault(user, [])  # get 找不到 key 的时候不会修改原字典，只返回 default_value
                 self.train[user][item] = int(score)
                 self.user_item_history[user].append(item)
 
@@ -56,25 +57,27 @@ class ItemBaseCF(object):
         基于item的协同过滤，计算相似度
         :return:  相似度矩阵{content_id:{content_id: 相似度得分}}
         """
-        self.item_to_item, self.item_count = dict(), dict()  # 文章-文章的共现矩阵，文章被多少个用户阅读
+        # self.item_to_item, self.item_count = dict(), dict()  # 文章-文章的共现矩阵，文章被多少个用户阅读
+        self.item_count = dict()  # 文章被多少个用户阅读
         for user, items in self.train.items():
-            for i in items.keys:
+            for i in items.keys():
                 self.item_count.setdefault(i, 0)
-                self.item_count[i] += 1  #item i出现一次我就加上1
+                self.item_count[i] += 1  # item i出现一次我就加上1
 
         for user, items in self.train.items():
-            for i in items.keys:
+            for i in items.keys():
                 self.item_to_item.setdefault(i, {})
                 for j in items.keys():
                     if i == j:
                         continue
-                    self.item_to_item[i].setdefault(i, {})
-                    self.item_to_item[i][j] += 1 / (math.sqrt(self.item_count[i] * self.item_count[j])) # item i 和 j 共现一次就加1
+                    self.item_to_item[i].setdefault(j, 0)
+                    # Jaccard相似度，x∩y/(sqrt(x*y)
+                    self.item_to_item[i][j] += 1 / (math.sqrt(self.item_count[i] * self.item_count[j]))  # item i 和 j 共现一次就加1
 
         # 计算相似度矩阵
         for _item in self.item_to_item:
             self.item_to_item[_item] = dict(sorted(self.item_to_item[_item].items(),
-                                            key=lambda x: x[1], reverse=True)[0:50])
+                                            key=lambda x: x[1], reverse=True)[0:50])  # 按分数倒序，取前50个
 
 
     # TODO 保存算法模型
@@ -97,8 +100,9 @@ class ItemBaseCF(object):
                     if j in action_item.keys():   # 如果文章j已经被阅读过了，那么我们就不推荐
                         continue
                     rank.setdefault(j, 0)
-                    rank[j] += score * wj / 1000 # 如果文章j没有被购买过，则累计文章j与item的相似度*兴趣评分，作为user对文章j的兴趣度
+                    rank[j] += score * wj / 1000  # 如果文章j没有被购买过，则累计文章j与item的相似度*兴趣评分，作为user对文章j的兴趣度
             res = dict(sorted(rank.items(), key=lambda x: x[1], reverse=True)[0:N])
             return list(res)
         except:
             return {}
+
