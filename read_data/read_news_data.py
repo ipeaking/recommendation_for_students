@@ -29,7 +29,7 @@
 from dao.mongo_db import MongoDB
 import os
 
-
+# 从MongoDB中取数据出来，按照 user_id, score, item_id 存到csv中
 class NewsData(object):
     def __init__(self):
         self.mongo = MongoDB(db='loginfo')
@@ -48,11 +48,11 @@ class NewsData(object):
         result = list()
         data = self.read_collection.find()
         for info in data:
-            result.append(str(info['user_id']) + ',1,' + str(info['content_id']))
+            result.append(str(info['user_id']) + ',1,' + str(info['content_id']))  # 用户id, 分数， item id
         self.to_csv(result, '../data/news_score/news_log.csv')
 
     def rec_users(self):
-        data = self.read_collection.distinct('user_id')
+        data = self.read_collection.distinct('user_id')  # 需要做推荐的用户
         return data
 
     def to_csv(self, user_score_content, res_file):

@@ -52,7 +52,7 @@ class LFM_model(object):
         with open(train_file, mode='r', encoding='utf-8') as rf:
             for line in tqdm(rf.readlines()):
                 userid, score, itemid = line.strip().split(',')
-                data.append([userid, 1, itemid])
+                data.append([userid, 1, itemid])  # 是个label，分数为1
         return data
 
     def lfm_train(self):
@@ -61,7 +61,7 @@ class LFM_model(object):
         :return:
             dict: key itemid, value:np.ndarray
             dict: key userid, value:np.ndarray
-
+            F 隐藏特征个数，alpth 正则化参数， beta 学习率， step 训练步数
         """
         F, alpth, beta, step = model_config['F'], model_config['alpha'], model_config['beta'], model_config['step']
         user_vec, item_vec = {}, {}
@@ -71,14 +71,14 @@ class LFM_model(object):
                 user_id, label, item_id = data_instance
                 # print(item_id)
                 if user_id not in user_vec:
-                    user_vec[user_id] = np.random.randn(F)
+                    user_vec[user_id] = np.random.randn(F)  # 随机
                 if item_id not in item_vec:
-                    item_vec[item_id] = np.random.randn(F)
-                delta = label - self.model_predict(user_vec[user_id], item_vec[item_id])
+                    item_vec[item_id] = np.random.randn(F)  # 随机
+                delta = label - self.model_predict(user_vec[user_id], item_vec[item_id])  # 损失
                 # print(delta)
 
-                user_vec[user_id] += beta * (delta * item_vec[item_id] - alpth * user_vec[user_id])
-                item_vec[item_id] += beta * (delta * user_vec[user_id] - alpth * item_vec[item_id])
+                user_vec[user_id] += beta * (delta * item_vec[item_id] - alpth * user_vec[user_id])  # 梯度下降
+                item_vec[item_id] += beta * (delta * user_vec[user_id] - alpth * item_vec[item_id])  # 参数更新
 
             beta = beta * 0.9
 
@@ -92,12 +92,12 @@ class LFM_model(object):
         :return:
             距离
         """
-        res = np.dot(user_vector, item_vector) / (np.linalg.norm(user_vector) * np.linalg.norm(item_vector))
+        res = np.dot(user_vector, item_vector) / (np.linalg.norm(user_vector) * np.linalg.norm(item_vector))  # 范数
         return res
 
     def cal_rec_item(self, user_id):
         """
-            利用LFM模型结果计算推荐结果
+            利用LFM模型结果计算推荐结果  TODO 对已经推荐的不做推荐了（去重）
         :param user_id:
         :return:
             [(item_id, score),(item_id, score),(item_id, score)]
@@ -122,6 +122,7 @@ class LFM_model(object):
 
 if __name__ == '__main__':
     file = params.NEWS_SCORE
+    # file = './train_file.txt'
     lfm = LFM_model(file)
     lfm.lfm_train()
 
