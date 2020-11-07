@@ -28,6 +28,7 @@
 # @File    : read_news_data.py
 from dao.mongo_db import MongoDB
 import os
+import time
 
 
 class NewsData(object):
@@ -35,6 +36,18 @@ class NewsData(object):
         self.mongo = MongoDB(db='loginfo')
         self.db_client = self.mongo.db_client
         self.read_collection = self.db_client['read']
+        self.likes_collection = self.db_client['likes']
+        self.collection = self.db_client['collections']
+        self.content = self.db_client['content_labels']
+
+    def test_content_time(self):
+        t = time.time()
+        data = self.content.find({"collections": 0}, {"collections": 1})
+
+        for info in data:
+            print(info)
+
+        print(time.time() - t)
 
     """
         #TODO 作业
@@ -44,12 +57,45 @@ class NewsData(object):
         如果同时存在2项  加 1分 
         如果同时存在3项  加 2分
     """
-    def get_data(self):
+    def cal_score(self):
         result = list()
+        score_dict = dict()
         data = self.read_collection.find()
         for info in data:
-            result.append(str(info['user_id']) + ',1,' + str(info['content_id']))
-        self.to_csv(result, '../data/news_score/news_log.csv')
+            if score_dict.get(info['user_id']) and score_dict[info['user_id']].get(info['content_id']):
+                print("user_id : {} ,content_id : {} is exist".format(info['user_id'], info['content_id']))
+                continue
+            score_dict.setdefault(info['user_id'], {})
+            score_dict[info['user_id']].setdefault(info['content_id'], 0)
+
+            query = {"user_id": info['user_id'], "content_id": info['content_id']}
+
+            exist_count = 0
+
+            read_count = self.read_collection.find(query).count()
+            if read_count > 0:
+                score_dict[info['user_id']][info['content_id']] += 1
+                exist_count += 1
+
+            like_count = self.likes_collection.find(query).count()
+            if like_count > 0:
+                score_dict[info['user_id']][info['content_id']] += 2
+                exist_count += 1
+            collection_count = self.collection.find(query).count()
+
+            if collection_count > 0:
+                score_dict[info['user_id']][info['content_id']] += 3
+                exist_count += 1
+
+            if exist_count == 2:
+                score_dict[info['user_id']][info['content_id']] += 1
+            elif exist_count == 3:
+                score_dict[info['user_id']][info['content_id']] += 2
+            else:
+                pass
+
+            result.append(str(info['user_id']) + ',' + str(score_dict[info['user_id']][info['content_id']]) + ',' + str(info['content_id']))
+        self.to_csv(result, '../data/news_score/result_score.csv')
 
     def rec_users(self):
         data = self.read_collection.distinct('user_id')
@@ -66,6 +112,6 @@ class NewsData(object):
 
 if __name__ == '__main__':
     news_data = NewsData()
-    news_data.rec_users()
+    news_data.cal_score()
 
 

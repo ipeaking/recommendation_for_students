@@ -28,4 +28,4 @@
 # @File    : params.py
 from util.file_locator import getfile
 
-NEWS_SCORE = getfile(r'data/news_score/news_log.csv')
+NEWS_SCORE = getfile(r'data/news_score/result_score.csv')

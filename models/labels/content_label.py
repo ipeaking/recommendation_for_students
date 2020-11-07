@@ -17,7 +17,6 @@ class ContentLabel(object):
         self.db_loginfo = self.mongo.db_loginfo
         self.collection = self.db_loginfo['content_labels']
 
-
     def get_data_from_mysql(self):
         types = self.session.query(distinct(Content.type))
         for i in types:
@@ -43,10 +42,11 @@ class ContentLabel(object):
                     content_collection['create_time'] = create_time
                     self.collection.insert_one(content_collection)
 
+            self.session.query(Content).filter(Content.type == i[0]).delete()
+
     def get_keywords(self, contents, nums=10):
         keywords = self.seg.extract_keyword(contents)[:nums]
         return keywords
-
 
     def get_words_nums(self, contents):
         ch = re.findall('([\u4e00-\u9fa5])', contents)

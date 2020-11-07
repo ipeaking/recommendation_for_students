@@ -66,7 +66,7 @@ class LFM_model(object):
         F, alpth, beta, step = model_config['F'], model_config['alpha'], model_config['beta'], model_config['step']
         user_vec, item_vec = {}, {}
         for s in range(step):
-            print("this is the {}th step".format(s + 1))
+            # print("this is the {}th step".format(s + 1))
             for data_instance in tqdm(self.train_data):
                 user_id, label, item_id = data_instance
                 # print(item_id)
@@ -125,7 +125,7 @@ if __name__ == '__main__':
     lfm = LFM_model(file)
     lfm.lfm_train()
 
-    rec_result = lfm.cal_rec_item('246')
+    rec_result = lfm.cal_rec_item('253')
     print(rec_result)
 
 

@@ -3,7 +3,7 @@ import datetime
 
 class MongoDB(object):
     def __init__(self, db):
-        mongo_client = self._connect('47.104.154.74', 27017, '', '', db)
+        mongo_client = self._connect('47.104.154.74', 21999, '', '', db)
         self.db_client = mongo_client[db]
         self.collection_test = self.db_client['test_collections']
         return

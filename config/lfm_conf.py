@@ -30,6 +30,6 @@ model_config = {
     "F": 50,  # 元素的大小
     "alpha": 0.01,  # ragularzation factor
     "beta": 0.1,
-    "step": 3,
+    "step": 3000,
     "fix_num": 100  # 推荐个数
 }
