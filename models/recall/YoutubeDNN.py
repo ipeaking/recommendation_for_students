@@ -51,7 +51,7 @@ class YoutubeDNN(object):
             data[feature] = lbe.fit_transform(data[feature]) + 1
             feature_max_idx[feature] = data[feature].max() + 1
         # 抽取用户、物品特征
-        user_info = data[["user_id", "gender", "age", "city"]].drop_duplicates('user_id')
+        user_info = data[["user_id", "gender", "age", "city"]].drop_duplicates('user_id')   #去重
         item_info = data[["item_id"]].drop_duplicates('item_id')
         user_info.set_index("user_id", inplace=True)
 

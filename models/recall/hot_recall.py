@@ -3,7 +3,12 @@ import numpy as np
 import math
 
 
-def decay_function(alpha=0.01, init=1000, deltaT=100):
+"""
+热度召回,这个需要好好研究
+"""
+
+
+def decay_function(alpha=0.01, init=1000, deltaT=100):    #deltaT 是迭代次数
     data = []
     for t in range(deltaT):
         if len(data) == 0:
