@@ -34,7 +34,7 @@ import time
 class NewsData(object):
     def __init__(self):
         self.mongo = MongoDB(db='loginfo')
-        self.db_client = self.mongo.db_client
+        self.db_client = self.mongo.db_client     #数据库的客户端
         self.read_collection = self.db_client['read']
         self.likes_collection = self.db_client['likes']
         self.collection = self.db_client['collections']
@@ -47,7 +47,7 @@ class NewsData(object):
         for info in data:
             print(info)
 
-        print(time.time() - t)
+        print(time.time() - t)       #打印消耗的时间
 
     """
         #TODO 作业
@@ -95,10 +95,10 @@ class NewsData(object):
                 pass
 
             result.append(str(info['user_id']) + ',' + str(score_dict[info['user_id']][info['content_id']]) + ',' + str(info['content_id']))
-        self.to_csv(result, '../data/news_score/result_score.csv')
+        self.to_csv(result, '../data/news_score/result_score.csv')     
 
     def rec_users(self):
-        data = self.read_collection.distinct('user_id')
+        data = self.read_collection.distinct('user_id')   #不同的用户,去掉相同的召回用户
         return data
 
     def to_csv(self, user_score_content, res_file):
