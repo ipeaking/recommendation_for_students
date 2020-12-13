@@ -15,6 +15,7 @@ class ContentLabel(object):
         self.session = self.engine._DBSession()  #构建session
         self.mongo = MongoDB(db='recommendation')
         self.db_loginfo = self.mongo.db_loginfo    #数据库
+
         self.collection = self.db_loginfo['content_labels']   #使用集合
 
     def get_data_from_mysql(self):
