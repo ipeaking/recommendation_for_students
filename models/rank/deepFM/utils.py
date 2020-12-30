@@ -118,7 +118,3 @@ class DataInput:
         
             
         return self.i, (features,labels)
-    
-
-
-    
