@@ -26,6 +26,9 @@
 # @Time    : 2020-08-22 10:19
 # @Author  : Hongbo Huang
 # @File    : redis_db.py
+
+
+#  解决ImportError: No module named redis  
 import redis
 
 
@@ -34,4 +37,4 @@ class Redis(object):
         self.redis = redis.StrictRedis(host='r-m5e8kd481g3boqztfhpd.redis.rds.aliyuncs.com',
                                        port=6379,
                                        password='Ipeaking123',
-                                       decode_responses=True)
+                                       decode_responses=True) # 错误的编码回应

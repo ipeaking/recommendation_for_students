@@ -27,12 +27,15 @@
 # @Author  : Hongbo Huang
 # @File    : content.py
 from sqlalchemy import Column,Integer,DateTime,Text
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import declarative_base      #自己导入
 Base = declarative_base()
 from dao.mysql_db import Mysql
 
-class Content(Base):
-    __tablename__ = 'data'
+class Content(Base):              
+    '''
+    表名, 字段
+    '''
+    __tablename__ = 'data'       
     id = Column(Integer(), primary_key=True)
     time = Column(DateTime())
     title = Column(Text())
@@ -42,4 +45,4 @@ class Content(Base):
     def __init__(self):
         mysql = Mysql()
         engine = mysql.engine
-        Base.metadata.create_all(engine)
+        Base.metadata.create_all(engine)   # 创建所有的引擎
