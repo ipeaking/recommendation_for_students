@@ -51,7 +51,7 @@ class SimpleRecList(object):
         '''
 
         for news in data:
-            self._redis.redis.zadd("rec_list", {str(news['_id']): count}) # redis.zadd,只是更新成员的顺序,比如前10000名成员的顺序
+            self._redis.redis.zadd("rec_list", {str(news['_id']): count}) # redis.zadd,新增一个键值对,里面是更新成员的顺序,比如前10000名成员的顺序
             count -= 1
             if count % 10 == 0:
                 print(count)

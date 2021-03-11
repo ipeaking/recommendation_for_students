@@ -49,10 +49,10 @@ class NewsData(object):
         data = self.read_collection.find()
         for info in data:
             result.append(str(info['user_id']) + ',1,' + str(info['content_id']))
-        self.to_csv(result, '../data/news_score/news_log.csv')
+        self.to_csv(result, '../data/news_score/news_log.csv')  # 写入文档
 
     def rec_users(self):
-        data = self.read_collection.distinct('user_id')
+        data = self.read_collection.distinct('user_id') # distinct就是区分唯一性
         return data
 
     def to_csv(self, user_score_content, res_file):

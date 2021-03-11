@@ -10,6 +10,7 @@
 #                 / \\|||  :  |||// \
 #                / _||||| -:- |||||- \
 #               |   | \\\  -  /// |   |
+
 #               | \_|  ''\---/''  |_/ |
 #               \  .-\__  '-'  ___/-. /
 #             ___'. .'  /--.--\  `. .'___
@@ -67,7 +68,7 @@ class write_to_redis(object):
                 result['hot_heat'] = info['hot_heat']
                 result['collections'] = info['collections']
                 # self._redis.redis.delete(str(info['_id']))
-                self._redis.redis.set("news_detail:"+str(info['_id']), str(result)) # 新增键值对
+                self._redis.redis.set("news_detail:"+str(info['_id']), str(result)) # 新增键值对,区分redis的内容所以加上前缀
                 if count % 100 == 0:     # 每100条打印一次进度
                     print(count)
                 count += 1
