@@ -45,6 +45,7 @@ class SchedRecNews(object):
         # 要计算得分，首先我们要知道给谁计算得分，也就是说我们要知道推荐用户的列表， 分成冷启动和有推荐列表的， 我们只需要给有推荐列表的人去计算
         # 也就是说，什么样的人有推荐列表呢？ 一定是使用过我们的App的，所以我们暂时认为一定是有阅读记录的人
         # 所以我们在这里，就要把有阅读记录的人拿出来
+
         user_list = self.new_data.rec_users()   # 待推荐人的user_id列表
         print(len(user_list))
         print('start cal score')
@@ -57,6 +58,7 @@ class SchedRecNews(object):
         print('start predict')
         for user_id in user_list:
             self.rec_list(user_id)
+
 
 
 

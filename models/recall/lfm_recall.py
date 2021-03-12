@@ -44,29 +44,35 @@ from config import params
 
 class LFM_model(object):
     def __init__(self, train_file):
-        self.train_data = self.get_train_data(train_file)
+        '''
+        训练文件, 用户向量, item向量
+        '''
+        self.train_data = self.get_train_data(train_file) # ?
         self.user_vec, self.item_vec = None, None
 
     def get_train_data(self, train_file):
+        '''
+        获取数据:[(userid, 1, itemid),...]
+        '''
         data = list()
         with open(train_file, mode='r', encoding='utf-8') as rf:
             for line in tqdm(rf.readlines()):
                 userid, score, itemid = line.strip().split(',')
-                data.append([userid, 1, itemid])
+                data.append([userid, 1, itemid]) # ?
         return data
 
     def lfm_train(self):
         """
         训练LFM模型（算法）
         :return:
-            dict: key itemid, value:np.ndarray
-            dict: key userid, value:np.ndarray
+            dict: key itemid, value:np.ndarray   {itemid:np.ndarray, ...}
+            dict: key userid, value:np.ndarray   {userid:np.ndarray, ...}
 
         """
         F, alpth, beta, step = model_config['F'], model_config['alpha'], model_config['beta'], model_config['step']
         user_vec, item_vec = {}, {}
         for s in range(step):
-            # print("this is the {}th step".format(s + 1))
+            print("this is the {}th step".format(s + 1)) # 这是从0开始的第一步
             for data_instance in tqdm(self.train_data):
                 user_id, label, item_id = data_instance
                 # print(item_id)
@@ -74,7 +80,7 @@ class LFM_model(object):
                     user_vec[user_id] = np.random.randn(F)
                 if item_id not in item_vec:
                     item_vec[item_id] = np.random.randn(F)
-                delta = label - self.model_predict(user_vec[user_id], item_vec[item_id])
+                delta = label - self.model_predict(user_vec[user_id], item_vec[item_id]) # ?
                 # print(delta)
 
                 user_vec[user_id] += beta * (delta * item_vec[item_id] - alpth * user_vec[user_id])
@@ -102,7 +108,7 @@ class LFM_model(object):
         :return:
             [(item_id, score),(item_id, score),(item_id, score)]
         """
-        fix_num = model_config['fix_num']
+        fix_num = model_config['fix_num'] # 配置的文件
         if user_id not in self.user_vec:
             return []
         record = dict()

@@ -32,6 +32,9 @@ import math
 
 class ItemBaseCF(object):
     def __init__(self, train_file):
+        '''
+        读取文件,用户和item的历史, item的相似度,训练
+        '''
         self.train = dict()
         self.user_item_history = dict()
         self.item_to_item = dict()
@@ -46,10 +49,10 @@ class ItemBaseCF(object):
         with open(train_file, mode='r', encoding='utf-8') as rf:
             for line in tqdm(rf.readlines()):
                 user, score, item = line.strip().split(",")
-                self.train.setdefault(user, {})
+                self.train.setdefault(user, {}) # 训练只是训练用户的
                 self.user_item_history.setdefault(user, {})
-                self.train[user][item] = int(score)
-                self.user_item_history[user].append(item)
+                self.train[user][item] = int(score) # 用户,item的分数
+                self.user_item_history[user].append(item) # 历史记录才需要添加item
 
     def cf_item_train(self):
         """
@@ -60,7 +63,7 @@ class ItemBaseCF(object):
         for user, items in self.train.items():
             for i in items.keys:
                 self.item_count.setdefault(i, 0)
-                self.item_count[i] += 1  #item i出现一次我就加上1
+                self.item_count[i] += 1  # item i出现一次我就加上1
 
         for user, items in self.train.items():
             for i in items.keys:
@@ -74,7 +77,7 @@ class ItemBaseCF(object):
         # 计算相似度矩阵
         for _item in self.item_to_item:
             self.item_to_item[_item] = dict(sorted(self.item_to_item[_item].items(),
-                                            key=lambda x: x[1], reverse=True)[0:50])
+                                            key=lambda x: x[1], reverse=True)[0:50])   # reverse就是倒序
 
 
     # TODO 保存算法模型
@@ -91,9 +94,9 @@ class ItemBaseCF(object):
         """
         rank = dict()  # 记录user的推荐文章（没有历史行为的文章） 和 感兴趣程度
         try:
-            action_item = self.train[user]
+            action_item = self.train[user] # 之前发生训练过的文章
             for item, score in action_item.items():
-                for j, wj in self.item_to_item[item].items():
+                for j, wj in self.item_to_item[item].items():  # 之前训练的文章列表
                     if j in action_item.keys():   # 如果文章j已经被阅读过了，那么我们就不推荐
                         continue
                     rank.setdefault(j, 0)

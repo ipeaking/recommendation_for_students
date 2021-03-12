@@ -62,6 +62,7 @@ class NewsData(object):
         score_dict = dict()
         data = self.read_collection.find()
         for info in data:
+
             if score_dict.get(info['user_id']) and score_dict[info['user_id']].get(info['content_id']):
                 print("user_id : {} ,content_id : {} is exist".format(info['user_id'], info['content_id']))
                 continue
@@ -95,10 +96,13 @@ class NewsData(object):
                 pass
 
             result.append(str(info['user_id']) + ',' + str(score_dict[info['user_id']][info['content_id']]) + ',' + str(info['content_id']))
-        self.to_csv(result, '../data/news_score/result_score.csv')     
+        self.to_csv(result, '../data/news_score/result_score.csv')     # 写入文档
+ 
+            result.append(str(info['user_id']) + ',1,' + str(info['content_id']))
+        self.to_csv(result, '../data/news_score/news_log.csv')  # 写入文档
 
     def rec_users(self):
-        data = self.read_collection.distinct('user_id')   #不同的用户,去掉相同的召回用户
+        data = self.read_collection.distinct('user_id') # distinct就是区分唯一性
         return data
 
     def to_csv(self, user_score_content, res_file):

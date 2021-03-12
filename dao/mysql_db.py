@@ -33,6 +33,13 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 
+
+'''
+declarative_base类维持了一个从类到表的关系，通常一个应用使用一个base实例，所有实体类都应该继承此类对象
+
+mysql创建数据库的引擎,创建会话
+_就是私有化方法
+'''
 class Mysql(object):
     def __init__(self):
         Base = declarative_base()
